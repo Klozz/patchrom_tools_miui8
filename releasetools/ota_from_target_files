@@ -407,7 +407,7 @@ def SignOutput(temp_zip_name, output_zip_name):
 def AppendAssertions(script, info_dict, oem_dict=None):
   oem_props = info_dict.get("oem_fingerprint_properties")
   if oem_props is None or len(oem_props) == 0:
-    device = GetBuildProp("ro.product.device", info_dict)
+    device = GetBuildProp("ro.xpe.device", info_dict)
     script.AssertDevice(device)
   else:
     if oem_dict is None:
@@ -454,7 +454,7 @@ def CalculateFingerprint(oem_props, oem_dict, info_dict):
   return "%s/%s/%s:%s" % (
       GetOemProperty("ro.product.brand", oem_props, oem_dict, info_dict),
       GetOemProperty("ro.product.name", oem_props, oem_dict, info_dict),
-      GetOemProperty("ro.product.device", oem_props, oem_dict, info_dict),
+      GetOemProperty("ro.xpe.device", oem_props, oem_dict, info_dict),
       GetBuildProp("ro.build.thumbprint", info_dict))
 
 
@@ -518,7 +518,7 @@ def WriteFullOTAPackage(input_zip, output_zip):
   metadata = {
       "post-build": CalculateFingerprint(oem_props, oem_dict,
                                          OPTIONS.info_dict),
-      "pre-device": GetOemProperty("ro.product.device", oem_props, oem_dict,
+      "pre-device": GetOemProperty("ro.xpe.device", oem_props, oem_dict,
                                    OPTIONS.info_dict),
       "post-timestamp": GetBuildProp("ro.build.date.utc", OPTIONS.info_dict),
   }
@@ -760,7 +760,7 @@ def WriteBlockIncrementalOTAPackage(target_zip, source_zip, output_zip):
       fstab=OPTIONS.source_info_dict["fstab"])
 
   metadata = {
-      "pre-device": GetBuildProp("ro.product.device",
+      "pre-device": GetBuildProp("ro.xpe.device",
                                  OPTIONS.source_info_dict),
       "post-timestamp": GetBuildProp("ro.build.date.utc",
                                      OPTIONS.target_info_dict),
@@ -1198,7 +1198,7 @@ def WriteIncrementalOTAPackage(target_zip, source_zip, output_zip):
         open(OPTIONS.oem_source).readlines())
 
   metadata = {
-      "pre-device": GetOemProperty("ro.product.device", oem_props, oem_dict,
+      "pre-device": GetOemProperty("ro.xpe.device", oem_props, oem_dict,
                                    OPTIONS.source_info_dict),
       "post-timestamp": GetBuildProp("ro.build.date.utc",
                                      OPTIONS.target_info_dict),
